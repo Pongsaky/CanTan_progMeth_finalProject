@@ -1,2 +1,4 @@
-package utils;public class Test {
+package utils;
+
+public class Test {
 }

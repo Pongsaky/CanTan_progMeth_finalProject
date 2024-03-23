@@ -1,2 +1,4 @@
-package pane;public class Tes {
+package pane;
+
+public class Test {
 }
