@@ -47,8 +47,7 @@ public class Player {
 
     public void setRoads (int roads) {
         if (roads < 0) {
-            System.out.println("The number of roads cannot be negative.");
-            return;
+            throw new IllegalArgumentException("The number of roads cannot be negative.");
         }
         this.roads = roads;
     }
@@ -59,8 +58,7 @@ public class Player {
 
     public void setSettlements (int settlements) {
         if (settlements < 0) {
-            System.out.println("The number of settlements cannot be negative.");
-            return;
+            throw new IllegalArgumentException("The number of settlements cannot be negative.");
         }
         this.settlements = settlements;
     }
@@ -71,8 +69,7 @@ public class Player {
 
     public void setCities (int cities) {
         if (cities < 0) {
-            System.out.println("The number of cities cannot be negative.");
-            return;
+            throw new IllegalArgumentException("The number of cities cannot be negative.");
         }
         this.cities = cities;
     }
