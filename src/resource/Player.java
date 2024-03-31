@@ -7,14 +7,14 @@ public class Player {
     private int victoryPoints;
     private int roads;
     private int settlements;
-    private int citiesRemaining;
+    private int cities;
     private HashMap<ResourceType, Integer> resources;
     public Player(String name) {
         this.name = name;
         this.victoryPoints = 0;
         this.roads = 0;
         this.settlements = 0;
-        this.citiesRemaining = 0;
+        this.cities = 0;
         this.resources = new HashMap<ResourceType, Integer>();
         // Initialize resources to zero
         for (ResourceType resource: ResourceType.values()) this.resources.put(resource, 0);
@@ -29,11 +29,16 @@ public class Player {
     }
 
     public int getVictoryPoints() {
+        calculatePoints();
         return victoryPoints;
     }
-
-    public void setVictoryPoints(int victoryPoints) {
-        this.victoryPoints = victoryPoints;
+    
+    public void calculatePoints () {
+        int points = 0;
+        points += this.victoryPoints;
+        points += this.settlements;
+        points += this.cities * 2;
+        this.victoryPoints = points;
     }
 
     public int getRoads () {
@@ -41,6 +46,10 @@ public class Player {
     }
 
     public void setRoads (int roads) {
+        if (roads < 0) {
+            System.out.println("The number of roads cannot be negative.");
+            return;
+        }
         this.roads = roads;
     }
 
@@ -49,15 +58,23 @@ public class Player {
     }
 
     public void setSettlements (int settlements) {
+        if (settlements < 0) {
+            System.out.println("The number of settlements cannot be negative.");
+            return;
+        }
         this.settlements = settlements;
     }
 
-    public int getCitiesRemaining() {
-        return citiesRemaining;
+    public int getCities () {
+        return cities;
     }
 
-    public void setCitiesRemaining(int citiesRemaining) {
-        this.citiesRemaining = citiesRemaining;
+    public void setCities (int cities) {
+        if (cities < 0) {
+            System.out.println("The number of cities cannot be negative.");
+            return;
+        }
+        this.cities = cities;
     }
 
     public HashMap<ResourceType, Integer> getResources() {
@@ -86,7 +103,7 @@ public class Player {
     }
 
     public boolean hasRemainingBuilding() {
-        return roads > 0 || settlements > 0 || citiesRemaining > 0;
+        return roads > 0 || settlements > 0 || cities > 0;
     }
 
 }
