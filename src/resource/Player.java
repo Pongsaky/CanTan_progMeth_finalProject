@@ -5,15 +5,15 @@ import java.util.HashMap;
 public class Player {
     private String name;
     private int victoryPoints;
-    private int roadsRemaining;
-    private int settlementsRemaining;
+    private int roads;
+    private int settlements;
     private int citiesRemaining;
     private HashMap<ResourceType, Integer> resources;
     public Player(String name) {
         this.name = name;
         this.victoryPoints = 0;
-        this.roadsRemaining = 0;
-        this.settlementsRemaining = 0;
+        this.roads = 0;
+        this.settlements = 0;
         this.citiesRemaining = 0;
         this.resources = new HashMap<ResourceType, Integer>();
         // Initialize resources to zero
@@ -36,20 +36,20 @@ public class Player {
         this.victoryPoints = victoryPoints;
     }
 
-    public int getRoadsRemaining() {
-        return roadsRemaining;
+    public int getRoads () {
+        return roads;
     }
 
-    public void setRoadsRemaining(int roadsRemaining) {
-        this.roadsRemaining = roadsRemaining;
+    public void setRoads (int roads) {
+        this.roads = roads;
     }
 
-    public int getSettlementsRemaining() {
-        return settlementsRemaining;
+    public int getSettlements () {
+        return settlements;
     }
 
-    public void setSettlementsRemaining(int settlementsRemaining) {
-        this.settlementsRemaining = settlementsRemaining;
+    public void setSettlements (int settlements) {
+        this.settlements = settlements;
     }
 
     public int getCitiesRemaining() {
@@ -86,7 +86,7 @@ public class Player {
     }
 
     public boolean hasRemainingBuilding() {
-        return roadsRemaining > 0 || settlementsRemaining > 0 || citiesRemaining > 0;
+        return roads > 0 || settlements > 0 || citiesRemaining > 0;
     }
 
 }
