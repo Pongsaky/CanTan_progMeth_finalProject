@@ -1,7 +1,10 @@
 package resource;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -14,7 +17,7 @@ public class Board extends Application {
   
   private final static double HEX_RAD_DELTA = Math.PI / 3;
   
-  public static Polygon createHexagon (double centerX, double centerY, double radius, Paint fill) {
+  public static Group createHexagon (double centerX, double centerY, double radius, Paint fill) {
     Polygon hex = new Polygon();
     
     // comparing to 6 is enough to ensure every angle is used once here
@@ -25,7 +28,21 @@ public class Board extends Application {
     
     hex.setFill(fill);
     hex.setStroke(Color.BLACK);
-    return hex;
+    
+    // Create a Group to hold the hexagon and the corner clickable areas
+    Group group = new Group(hex);
+    
+    // Add a click event handler to each corner of the hexagon
+    for (int i = 0; i < hex.getPoints().size(); i += 2) {
+      double x = hex.getPoints().get(i);
+      double y = hex.getPoints().get(i + 1);
+      Polygon corner = new Polygon(x - 15, y - 15, x + 15, y - 15, x + 15, y + 15, x - 15, y + 15);
+      corner.setFill(Color.TRANSPARENT);
+      corner.setOnMouseClicked(event -> corner.setFill(Color.RED));
+      group.getChildren().add(corner);
+    }
+    
+    return group;
   }
   
   @Override
@@ -35,6 +52,7 @@ public class Board extends Application {
             Color.BLUE,
     };
     
+    // for fill in the middle 5*5
     Integer[] landsizeForY234 = new Integer[]{1, 5};
     Map<Integer, Integer[]> toFills = Map.of(
             1, new Integer[]{3, 3},
@@ -48,6 +66,7 @@ public class Board extends Application {
     final double dY = radius * Math.sqrt(3) / 2;
     
     Pane root = new Pane();
+    
     for (int y = 0; y < 7; y++) {
       double offsetY = 2 * dY * y + 50;
       
@@ -61,7 +80,7 @@ public class Board extends Application {
       
       
       for (int x = 0; x < 7; x++) {
-        if (y == 0 && x%2 == 0) continue;
+        if (y == 0 && x % 2 == 0) continue;
         
         Color fill;
         if (isLand && x >= landL && x <= landR) fill = fills[0];
