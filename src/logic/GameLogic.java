@@ -1,6 +1,7 @@
 package logic;
 
 
+import resource.Board;
 import resource.Player;
 
 import java.util.ArrayList;
