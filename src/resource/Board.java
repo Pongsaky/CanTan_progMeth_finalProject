@@ -1,6 +1,7 @@
 package resource;
 
 import javafx.application.Application;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -11,67 +12,81 @@ import javafx.stage.Stage;
 import java.util.Map;
 
 public class Board extends Application {
-  
+  private static final Color[] TileColors = new Color[]{
+          Color.GREEN,
+          Color.BLUE,
+  };
+  private static final double RADIUS = 50;
+  private static final double D_Y = RADIUS * Math.sqrt(3) / 2;
   private final static double HEX_RAD_DELTA = Math.PI / 3;
+  private Color cornerColor = Color.TRANSPARENT; // house/city representation
+  private final Map<Integer, Integer[]> landMap = Map.of(
+          1, new Integer[]{3, 3},
+          2, new Integer[]{1, 5},
+          3, new Integer[]{1, 5},
+          4, new Integer[]{1, 5},
+          5, new Integer[]{2, 4}
+  ); // this is the range of the land base on number of tile
   
-  public static Polygon createHexagon (double centerX, double centerY, double radius, Paint fill) {
+  private Group createHexagon (double centerX, double centerY, Paint fill) {
     Polygon hex = new Polygon();
     
     // comparing to 6 is enough to ensure every angle is used once here
     // since (5/6) * 2 * PI < 6 < 2 * PI
     for (double rad = 0; rad < 6; rad += HEX_RAD_DELTA) {
-      hex.getPoints().addAll(Math.cos(rad) * radius + centerX, Math.sin(rad) * radius + centerY);
+      hex.getPoints().addAll(Math.cos(rad) * Board.RADIUS + centerX, Math.sin(rad) * Board.RADIUS + centerY);
     }
     
     hex.setFill(fill);
     hex.setStroke(Color.BLACK);
-    return hex;
+    
+    // Create a Group to hold the hexagon and the corner clickable areas
+    Group group = new Group(hex);
+    
+    // Add a click event handler to each corner of the hexagon
+    for (int i = 0; i < hex.getPoints().size(); i += 2) {
+      double x = hex.getPoints().get(i);
+      double y = hex.getPoints().get(i + 1);
+      Polygon corner = new Polygon(x - 15, y - 15, x + 15, y - 15, x + 15, y + 15, x - 15, y + 15);
+      corner.setFill(this.cornerColor);
+      corner.setOnMouseClicked(event -> System.out.println("Clicked on corner at (" + x + ", " + y + ")"));
+      
+      group.getChildren().add(corner);
+    }
+    
+    return group;
   }
   
   @Override
   public void start (Stage primaryStage) {
-    Color[] fills = new Color[]{
-            Color.GREEN,
-            Color.BLUE,
-    };
     
-    Integer[] landsizeForY234 = new Integer[]{1, 5};
-    Map<Integer, Integer[]> toFills = Map.of(
-            1, new Integer[]{3, 3},
-            2, landsizeForY234,
-            3, landsizeForY234,
-            4, landsizeForY234,
-            5, new Integer[]{2, 4}
-    );
     
-    final double radius = 50;
-    final double dY = radius * Math.sqrt(3) / 2;
     
     Pane root = new Pane();
-    for (int y = 0; y < 7; y++) {
-      double offsetY = 2 * dY * y + 50;
+    
+    for (int row = 0; row < 7; row++) {
+      double offsetY = 2 * D_Y * row + 50;
       
-      boolean isLand = y > 0 && y < 6;
-      int landL = 0;
-      int landR = 0;
+      boolean isLand = row > 0 && row < 6;
+      int leftLand = 0;
+      int rightLand = 0;
       if (isLand) {
-        landL = toFills.get(y)[0];
-        landR = toFills.get(y)[1];
+        leftLand = landMap.get(row)[0];
+        rightLand = landMap.get(row)[1];
       }
       
-      
-      for (int x = 0; x < 7; x++) {
-        if (y == 0 && x%2 == 0) continue;
+      for (int col = 0; col < 7; col++) {
+        if (row == 0 && col % 2 == 0) continue;
         
-        Color fill;
-        if (isLand && x >= landL && x <= landR) fill = fills[0];
-        else fill = fills[1];
+        Color tileColor;
+        
+        if (isLand && col >= leftLand && col <= rightLand) tileColor = TileColors[0];
+        else tileColor = TileColors[1];
         
         root.getChildren().add(createHexagon(
-                1.5 * radius * x + 50,
-                (x & 1) == 0 ? offsetY : offsetY + dY,
-                radius,
-                fill
+                1.5 * RADIUS * col + 50,
+                (col & 1) == 0 ? offsetY : offsetY + D_Y,
+                tileColor
         ));
       }
     }
@@ -81,4 +96,25 @@ public class Board extends Application {
     primaryStage.setScene(scene);
     primaryStage.show();
   }
+  
+  public boolean isLandtile(double x, double y) {
+    // Calculate the column and row of the tile based on the (x, y) coordinate
+    int col = (int) Math.floor(x / (1.5 * RADIUS));
+    int row = (int) Math.floor((y - (col % 2 == 0 ? 0 : D_Y)) / D_Y);
+    
+    // Check if the tile is within the 5x5 middle region
+    boolean isLand = row > 0 && row < 6;
+    int leftLand = landMap.get(row)[0];
+    int rightLand = landMap.get(row)[1];
+    
+    // Return true if the tile is green, false otherwise
+    return isLand && col >= leftLand && col <= rightLand;
+  }
+  
+  public Color getCornerColor () {return this.cornerColor;}
+  
+  public void setCornerColor (Color color) {
+    this.cornerColor = color;
+  }
+  
 }
