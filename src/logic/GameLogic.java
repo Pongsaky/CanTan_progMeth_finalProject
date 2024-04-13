@@ -42,7 +42,7 @@ public class GameLogic {
         this.setupPhase = false;
 
         // Initial from first to last
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < players.size(); i++) {
             forwardToNextPlayer();
             Player currentPlayer = getCurrentPlayer();
             System.out.println("Forward Setup " + currentPlayer.getName() + " Choose action");
@@ -50,7 +50,7 @@ public class GameLogic {
         }
 
         // Initial from last to first
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < players.size(); i++) {
             Player currentPlayer = getCurrentPlayer();
             backwardToNextPlayer();
             System.out.println("Backward Setup " + currentPlayer.getName() + " Choose action");
