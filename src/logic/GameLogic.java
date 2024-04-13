@@ -46,7 +46,7 @@ public class GameLogic {
             forwardToNextPlayer();
             Player currentPlayer = getCurrentPlayer();
             System.out.println("Forward Setup " + currentPlayer.getName() + " Choose action");
-//            placeObject(currentPlayer, );
+            // Place settlement and road
         }
 
         // Initial from last to first
@@ -54,12 +54,22 @@ public class GameLogic {
             Player currentPlayer = getCurrentPlayer();
             backwardToNextPlayer();
             System.out.println("Backward Setup " + currentPlayer.getName() + " Choose action");
-//            placeObject(currentPlayer, );
+            // Place settlement and road
+
+            // Get the resource
         }
     }
 
     private void performNormalPhase() {
+        Player currentPlayer = getCurrentPlayer();
 
+        // 1. Roll dice
+
+        // 2. Collect resources
+
+        // 3. Build structure
+
+        // 4. Trade with other player?
     }
 
     private void forwardToNextPlayer() {
